@@ -71,7 +71,7 @@ def generate_excel_with_template(output_excel, names):
     sum_format = workbook.add_format(
         {
             "font_size": 10,
-            "num_format": "¥#,##0",
+            "num_format": "¥#,##0.0",
             "border": 1,
             "align": "left",
             "valign": "vcenter",
@@ -169,7 +169,7 @@ layout = [
             size=(50, 10),
             key="details",
             disabled=False,
-            default_text="1.牛奶 950ml*1盒\n2.面包 450g*1盒\n3.饼干 200g*1盒\n4.水果 500g*1盒\n5.坚果 200g*1盒"
+            default_text="1.\n2.\n3.\n4.\n5.",
         )
     ],
 ]
@@ -191,19 +191,7 @@ NAME_12 = [
     "邹颖",
     "禹枭",
 ]
-NAME_16 = [
-    "张林",
-    "高雅妮",
-    "郑晓臻",
-    "李艳丽",
-    "陆琼",
-    "廖方智",
-    "王伟",
-    "钟超",
-    "黄浩文",
-    "刘锦城",
-    "邹颖",
-    "禹枭",
+NAME_16 = NAME_12 + [
     "叶若芳",
     "何照月",
     "何俊璋",
@@ -215,15 +203,22 @@ while True:
     if event == sg.WINDOW_CLOSED or event == "退出":
         break
     elif event == "生成方案":
+        if values["total_amount"] == "":
+            sg.popup("请输入总金额", title="错误",keep_on_top=True)
+            continue
         try:
             output_path_doxc = f"{values['year']}年{values['festival']}慰问品方案.docx"
-            if values["total_amount"] == "":
-                sg.popup("请输入总金额", title="错误")
-                continue
+                
+            people_str = ""
+            if int(values['people']) == 12:
+                people_str = f'员工{values['people']}人'
+            elif int(values['people']) == 16:
+                people_str = f'员工12人,客户经理4人'
             context = {
                 "年份": values["year"],
                 "节日名称": values["festival"].strip(),
-                "人数": values["people"],
+                "人数": people_str,
+                "总份数": values["people"],
                 "慰问品内容": values["details"],
                 "总金额": values["total_amount"],
                 "签字日期": f"日期：{datetime.now().strftime('%Y-%m-%d')}",
@@ -244,7 +239,7 @@ while True:
                 sg.popup("请输入总金额", title="错误")
                 continue
             output_path_excel = (
-                f"{values['year']}_{values['festival']}_慰问品领用签字表.xlsx"
+                f"{values['year']}年{values['festival']}慰问品领用签字表.xlsx"
             )
             year = values["year"]
             festival = values["festival"].strip()
