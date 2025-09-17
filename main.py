@@ -162,14 +162,27 @@ layout = [
             sg.Combo([12, 16], default_value=12, key="people"),
         ],
     ],
-    [sg.Text("慰问品总金额:"), sg.Input(key="total_amount", size=(10, 1))],
+    [
+        sg.Text("慰问品总金额:"),
+        sg.Input(key="total_amount", size=(10, 1)),
+        sg.Button("查看人均金额"),
+        sg.Text("人均金额："),
+        sg.Text("0", key="avg_price"),
+    ],
     [sg.Button("生成方案"), sg.Button("生成领用表"), sg.Button("退出")],
     [
         sg.Multiline(
             size=(50, 10),
             key="details",
             disabled=False,
-            default_text="1.\n2.\n3.\n4.\n5.",
+            default_text="""1.明治鲜牛奶950ml*2盒
+2.盒马椰子水250ml*6盒
+3.简爱0添加酸奶135g*4盒
+4.冰鲜原切澳洲谷饲牛腱1kg
+5.进口牛肋条800g
+6.黄金香葡萄550g
+7.陕西冰糖冬枣400g
+8.佳农进口香蕉800g""",
         )
     ],
 ]
@@ -202,18 +215,28 @@ while True:
     event, values = window.read()  # type: ignore
     if event == sg.WINDOW_CLOSED or event == "退出":
         break
+    elif event == "查看人均金额":
+        if values["total_amount"] == "":
+            sg.popup("请输入总金额", title="错误", keep_on_top=True)
+            continue
+        avg = round(float(values["total_amount"]) / int(values["people"]), 2)
+        if avg >= 300:
+            sg.popup("人均金额超标", title="错误", keep_on_top=True)
+            continue
+        window["avg_price"].update(str(round(avg, 2)))
+        # print(values["avg_price"])
     elif event == "生成方案":
         if values["total_amount"] == "":
-            sg.popup("请输入总金额", title="错误",keep_on_top=True)
+            sg.popup("请输入总金额", title="错误", keep_on_top=True)
             continue
         try:
             output_path_doxc = f"{values['year']}年{values['festival']}慰问品方案.docx"
-                
+
             people_str = ""
-            if int(values['people']) == 12:
-                people_str = f'员工{values['people']}人'
-            elif int(values['people']) == 16:
-                people_str = f'员工12人,客户经理4人'
+            if int(values["people"]) == 12:
+                people_str = f"员工{values['people']}人"
+            elif int(values["people"]) == 16:
+                people_str = f"员工12人,客户经理4人"
             context = {
                 "年份": values["year"],
                 "节日名称": values["festival"].strip(),
