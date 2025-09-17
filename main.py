@@ -223,7 +223,8 @@ while True:
         if avg >= 300:
             sg.popup("人均金额超标", title="错误", keep_on_top=True)
             continue
-        window["avg_price"].update(str(round(avg, 2)))
+        else:
+            window["avg_price"].update(str(round(avg, 2)))
         # print(values["avg_price"])
     elif event == "生成方案":
         if values["total_amount"] == "":
