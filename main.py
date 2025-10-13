@@ -175,14 +175,13 @@ layout = [
             size=(50, 10),
             key="details",
             disabled=False,
-            default_text="""1.明治鲜牛奶950ml*2盒
-2.盒马椰子水250ml*6盒
-3.简爱0添加酸奶135g*4盒
-4.冰鲜原切澳洲谷饲牛腱1kg
-5.进口牛肋条800g
-6.黄金香葡萄550g
-7.陕西冰糖冬枣400g
-8.佳农进口香蕉800g""",
+            default_text="""
+            1.佳农进口香蕉800g
+            2.盒马椰子水250ml*6盒
+            3.陕西冰糖冬枣400g
+            4.冰鲜原切澳洲谷饲牛腱1kg
+            5.进口牛肋条800g*2盒
+            6.黄金猕猴桃550g""",
         )
     ],
 ]
@@ -216,6 +215,7 @@ while True:
     if event == sg.WINDOW_CLOSED or event == "退出":
         break
     elif event == "查看人均金额":
+        sg.popup_ok("找王伟确认经纪人人数先", title="提示", keep_on_top=True,text_color="yellow")
         if values["total_amount"] == "":
             sg.popup("请输入总金额", title="错误", keep_on_top=True)
             continue
